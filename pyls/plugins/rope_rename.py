@@ -3,8 +3,12 @@ import logging
 import os
 import sys
 
-from rope.base import libutils
-from rope.refactor.rename import Rename
+try:
+    from rope.base import libutils
+    from rope.refactor.rename import Rename
+except ModuleNotFoundError:
+    from pkg_resources import DistributionNotFound
+    raise DistributionNotFound()
 
 from pyls import hookimpl, uris
 

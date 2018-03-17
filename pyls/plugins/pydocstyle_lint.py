@@ -3,7 +3,12 @@ import contextlib
 import logging
 import sys
 
-import pydocstyle
+try:
+    import pydocstyle
+except ModuleNotFoundError:
+    from pkg_resources import DistributionNotFound
+    raise DistributionNotFound()
+
 from pyls import hookimpl, lsp
 
 log = logging.getLogger(__name__)

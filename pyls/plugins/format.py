@@ -1,8 +1,14 @@
 # Copyright 2017 Palantir Technologies, Inc.
 import logging
 import os
-from yapf.yapflib import file_resources
-from yapf.yapflib.yapf_api import FormatCode
+
+try:
+    from yapf.yapflib import file_resources
+    from yapf.yapflib.yapf_api import FormatCode
+except ModuleNotFoundError:
+    from pkg_resources import DistributionNotFound
+    raise DistributionNotFound()
+
 from pyls import hookimpl
 
 log = logging.getLogger(__name__)

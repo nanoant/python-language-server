@@ -8,8 +8,12 @@ import imp
 import pkgutil
 
 import jedi
-from rope.base import libutils
-from rope.base.project import Project
+try:
+    from rope.base import libutils
+    from rope.base.project import Project
+except ModuleNotFoundError:
+    libutils = None
+    Project = None
 
 from . import lsp, uris, _utils
 
@@ -72,7 +76,8 @@ class Workspace(object):
     M_PUBLISH_DIAGNOSTICS = 'textDocument/publishDiagnostics'
     M_APPLY_EDIT = 'workspace/applyEdit'
     M_SHOW_MESSAGE = 'window/showMessage'
-    PRELOADED_MODULES = get_preferred_submodules()
+    if Project is not None:
+        PRELOADED_MODULES = get_preferred_submodules()
 
     def __init__(self, root_uri, rpc_manager):
         self._root_uri = root_uri
@@ -82,13 +87,17 @@ class Workspace(object):
         self._docs = {}
 
         # Whilst incubating, keep private
-        self.__rope = Project(self._root_path)
-        self.__rope.prefs.set('extension_modules', self.PRELOADED_MODULES)
+        if Project is not None:
+            self.__rope = Project(self._root_path)
+            self.__rope.prefs.set('extension_modules', self.PRELOADED_MODULES)
+        else:
+            self.__rope = None
 
     @property
     def _rope(self):
         # TODO: we could keep track of dirty files and validate only those
-        self.__rope.validate()
+        if self.__rope is not None:
+            self.__rope.validate()
         return self.__rope
 
     @property
@@ -159,7 +168,7 @@ class Document(object):
 
     @property
     def _rope(self):
-        return libutils.path_to_resource(self._rope_project, self.path)
+        return None if libutils is None else libutils.path_to_resource(self._rope_project, self.path)
 
     @property
     def lines(self):

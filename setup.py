@@ -39,10 +39,7 @@ setup(
         'json-rpc==1.10.8',
         'mccabe',
         'pycodestyle',
-        'pydocstyle>=2.0.0',
         'pyflakes',
-        'rope>=0.10.5',
-        'yapf',
         'pluggy'
     ],
 
@@ -51,6 +48,9 @@ setup(
     # for example:
     # $ pip install -e .[test]
     extras_require={
+        'rope': ['rope>=0.10.5'],
+        'yapf': ['yapf'],
+        'pydocstyle': ['pydocstyle>=2.0.0'],
         'test': ['tox', 'versioneer', 'pytest', 'mock', 'pytest-cov', 'coverage'],
     },
 
